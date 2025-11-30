@@ -2,7 +2,6 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.openapi.utils import get_openapi
 
 from core.config import settings
 from core.database import init_db
@@ -34,6 +33,8 @@ A maioria dos endpoints requer autenticação via **API Key** no header:
 ```
 X-API-Key: sua-api-key-aqui
 ```
+
+Clique no botão **Authorize** acima e insira sua API Key para testar os endpoints.
 
 O endpoint de webhook (`POST /api/payment/webhook`) **não requer autenticação** pois é chamado diretamente pelo Mercado Pago.
 
@@ -74,38 +75,6 @@ app = FastAPI(
         },
     ],
 )
-
-
-def custom_openapi():
-    if app.openapi_schema:
-        return app.openapi_schema
-
-    openapi_schema = get_openapi(
-        title=app.title,
-        version=app.version,
-        description=app.description,
-        routes=app.routes,
-        tags=app.openapi_tags,
-    )
-
-    # Adicionar esquema de segurança (API Key)
-    openapi_schema["components"]["securitySchemes"] = {
-        "ApiKeyAuth": {
-            "type": "apiKey",
-            "in": "header",
-            "name": "X-API-Key",
-            "description": "API Key para autenticação. Obtenha sua chave no painel administrativo.",
-        }
-    }
-
-    # Aplicar segurança globalmente (exceto para endpoints específicos)
-    openapi_schema["security"] = [{"ApiKeyAuth": []}]
-
-    app.openapi_schema = openapi_schema
-    return app.openapi_schema
-
-
-app.openapi = custom_openapi
 
 app.add_middleware(
     CORSMiddleware,
