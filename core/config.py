@@ -4,7 +4,7 @@ from functools import lru_cache
 
 class Settings(BaseSettings):
     APP_NAME: str = "Aprova Fácil API"
-    APP_VERSION: str = "1.0.0"
+    APP_VERSION: str = "DEV-1.0.1"
     DEBUG: bool = False
 
     DATABASE_URL: str

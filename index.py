@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.openapi.utils import get_openapi
 
 from core.config import settings
 from core.database import init_db
@@ -14,12 +15,97 @@ async def lifespan(app: FastAPI):
     yield
 
 
+DESCRIPTION = """
+## Aprova Fácil API
+
+API backend para integração com **Mercado Pago Bricks** - a solução de pagamentos do Mercado Pago.
+
+### Funcionalidades
+
+* **Processar pagamentos** com cartão de crédito/débito via Card Payment Brick
+* **Criar preferências** para Checkout Pro e Payment Brick
+* **Consultar parcelamento** em tempo real baseado no BIN do cartão
+* **Webhooks** para receber notificações de pagamentos
+
+### Autenticação
+
+A maioria dos endpoints requer autenticação via **API Key** no header:
+
+```
+X-API-Key: sua-api-key-aqui
+```
+
+O endpoint de webhook (`POST /api/payment/webhook`) **não requer autenticação** pois é chamado diretamente pelo Mercado Pago.
+
+### Ambiente de Testes
+
+Para testes, utilize as [credenciais de sandbox do Mercado Pago](https://www.mercadopago.com.br/developers/pt/docs/your-integrations/credentials).
+
+### Links Úteis
+
+* [Documentação Mercado Pago Bricks](https://www.mercadopago.com.br/developers/pt/docs/checkout-bricks/landing)
+* [Cartões de teste](https://www.mercadopago.com.br/developers/pt/docs/your-integrations/test/cards)
+"""
+
 app = FastAPI(
     title=settings.APP_NAME,
-    description="Backend para integração com Mercado Pago Bricks",
+    description=DESCRIPTION,
     version=settings.APP_VERSION,
     lifespan=lifespan,
+    contact={
+        "name": "Suporte Aprova Fácil",
+        "email": "suporte@aprovafacil.com.br",
+    },
+    license_info={
+        "name": "Proprietário",
+    },
+    openapi_tags=[
+        {
+            "name": "Health",
+            "description": "Endpoints de monitoramento e status da API",
+        },
+        {
+            "name": "Payment",
+            "description": "Endpoints para processamento de pagamentos via Mercado Pago",
+        },
+        {
+            "name": "Webhook",
+            "description": "Endpoint para receber notificações do Mercado Pago",
+        },
+    ],
 )
+
+
+def custom_openapi():
+    if app.openapi_schema:
+        return app.openapi_schema
+
+    openapi_schema = get_openapi(
+        title=app.title,
+        version=app.version,
+        description=app.description,
+        routes=app.routes,
+        tags=app.openapi_tags,
+    )
+
+    # Adicionar esquema de segurança (API Key)
+    openapi_schema["components"]["securitySchemes"] = {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "in": "header",
+            "name": "X-API-Key",
+            "description": "API Key para autenticação. Obtenha sua chave no painel administrativo.",
+        }
+    }
+
+    # Aplicar segurança globalmente (exceto para endpoints específicos)
+    openapi_schema["security"] = [{"ApiKeyAuth": []}]
+
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
+
+
+app.openapi = custom_openapi
 
 app.add_middleware(
     CORSMiddleware,
