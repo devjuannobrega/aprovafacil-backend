@@ -2,8 +2,8 @@ from typing import Optional
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.models.transaction import Transaction
-from src.repositories.base_repository import BaseRepository
+from models.transaction import Transaction
+from repositories.base_repository import BaseRepository
 
 
 class TransactionRepository(BaseRepository[Transaction]):

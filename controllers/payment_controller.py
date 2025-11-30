@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.core.database import get_db
-from src.core.security import verify_api_key
-from src.schemas.payment import PaymentRequest, PreferenceRequest
-from src.services.mercadopago_service import MercadoPagoService, get_mercadopago_service
-from src.services.payment_service import PaymentService
+from core.database import get_db
+from core.security import verify_api_key
+from schemas.payment import PaymentRequest, PreferenceRequest
+from services.mercadopago_service import MercadoPagoService, get_mercadopago_service
+from services.payment_service import PaymentService
 
 router = APIRouter(prefix="/api/payment", tags=["Payment"])
 

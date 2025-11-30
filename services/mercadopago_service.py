@@ -1,6 +1,6 @@
 import mercadopago
-from src.core.config import settings
-from src.schemas.payment import PaymentRequest, PreferenceRequest
+from core.config import settings
+from schemas.payment import PaymentRequest, PreferenceRequest
 
 
 class MercadoPagoService:

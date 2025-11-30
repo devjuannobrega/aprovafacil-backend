@@ -1,11 +1,11 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.models.payment import Payment
-from src.models.transaction import Transaction
-from src.repositories.payment_repository import PaymentRepository
-from src.repositories.transaction_repository import TransactionRepository
-from src.schemas.payment import PaymentRequest, PreferenceRequest
-from src.services.mercadopago_service import MercadoPagoService
+from models.payment import Payment
+from models.transaction import Transaction
+from repositories.payment_repository import PaymentRepository
+from repositories.transaction_repository import TransactionRepository
+from schemas.payment import PaymentRequest, PreferenceRequest
+from services.mercadopago_service import MercadoPagoService
 
 
 class PaymentService:

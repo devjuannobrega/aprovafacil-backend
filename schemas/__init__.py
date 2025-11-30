@@ -1,4 +1,4 @@
-from src.schemas.payment import (
+from schemas.payment import (
     PayerIdentification,
     Payer,
     PaymentRequest,

@@ -3,9 +3,9 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from src.core.config import settings
-from src.core.database import init_db
-from src.controllers import payment_router, health_router
+from core.config import settings
+from core.database import init_db
+from controllers import payment_router, health_router
 
 
 @asynccontextmanager
@@ -31,8 +31,3 @@ app.add_middleware(
 
 app.include_router(health_router)
 app.include_router(payment_router)
-
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000, reload=True)
