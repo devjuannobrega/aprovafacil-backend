@@ -51,7 +51,7 @@ class PaymentService:
 
             return {
                 "success": True,
-                "payment_id": response["id"],
+                "payment_id": str(response["id"]),
                 "status": response["status"],
                 "status_detail": response.get("status_detail"),
             }
